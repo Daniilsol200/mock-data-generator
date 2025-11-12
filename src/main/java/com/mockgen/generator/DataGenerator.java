@@ -6,7 +6,7 @@ import com.mockgen.output.OutputFormatter;
 
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.random.RandomGenerator;
+import java.util.Random;
 
 /**
  * Основной класс генерации данных.
@@ -14,11 +14,11 @@ import java.util.random.RandomGenerator;
 public class DataGenerator {
     private final AppConfig config;
     private final List<FieldGenerator> generators;
-    private final RandomGenerator rng;
+    private final Random rng;
 
     public DataGenerator(AppConfig config) {
         this.config = config;
-        this.rng = RandomGenerator.getDefault();
+        this.rng = new Random();
         this.generators = buildGenerators(config.getFields());
     }
 
@@ -41,9 +41,6 @@ public class DataGenerator {
         return list;
     }
 
-    /**
-     * Генерирует N строк и выводит через formatter.
-     */
     public void generate(PrintWriter writer, OutputFormatter formatter) {
         formatter.writeHeader(writer, config.getFields());
         for (int i = 0; i < config.getRowsCount(); i++) {

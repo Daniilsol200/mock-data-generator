@@ -2,7 +2,7 @@ package com.mockgen.generator.generators;
 
 import com.mockgen.generator.FieldGenerator;
 
-import java.util.random.RandomGenerator;
+import java.util.Random;
 
 /**
  * Генерирует случайный email на основе имени.
@@ -15,10 +15,9 @@ public class EmailGenerator implements FieldGenerator {
     };
 
     @Override
-    public String generate(RandomGenerator rng) {
+    public String generate(Random rng) {
         StringBuilder sb = new StringBuilder();
-        // 5-10 случайных букв
-        int length = rng.nextInt(5, 11);
+        int length = rng.nextInt(6) + 5; // 5..10
         for (int i = 0; i < length; i++) {
             char c = (char) ('a' + rng.nextInt(26));
             sb.append(i == 0 ? c : (rng.nextBoolean() ? c : Character.toUpperCase(c)));

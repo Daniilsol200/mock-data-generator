@@ -2,9 +2,9 @@ package com.mockgen;
 
 import com.mockgen.config.AppConfig;
 import com.mockgen.generator.DataGenerator;
-import com.mockgen.output.OutputFormatter;
 import com.mockgen.output.CsvFormatter;
 import com.mockgen.output.JsonFormatter;
+import com.mockgen.output.OutputFormatter;
 
 import java.io.PrintWriter;
 
@@ -22,8 +22,7 @@ public class Main {
             }
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
-            e.printStackTrace(); // Добавь для отладки!
-            System.exit(1);
+            e.printStackTrace();
         }
     }
 }

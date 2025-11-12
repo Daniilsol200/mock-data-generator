@@ -1,7 +1,8 @@
 package com.mockgen.generator.generators;
 
 import com.mockgen.generator.FieldGenerator;
-import java.util.random.RandomGenerator;
+
+import java.util.Random;
 
 /**
  * Генерирует случайное целое число в диапазоне [min, max].
@@ -16,7 +17,8 @@ public class IntGenerator implements FieldGenerator {
     }
 
     @Override
-    public String generate(RandomGenerator rng) {
-        return String.valueOf(rng.nextInt(min, max + 1));
+    public String generate(Random rng) {
+        int range = max - min + 1;
+        return String.valueOf(rng.nextInt(range) + min);
     }
 }

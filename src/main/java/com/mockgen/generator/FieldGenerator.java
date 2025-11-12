@@ -1,11 +1,11 @@
 package com.mockgen.generator;
 
-import java.util.random.RandomGenerator;
+import java.util.Random;
 
 /**
  * Интерфейс для генераторов значений полей.
  */
 @FunctionalInterface
 public interface FieldGenerator {
-    String generate(RandomGenerator rng);
+    String generate(Random rng);
 }
