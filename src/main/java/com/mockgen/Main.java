@@ -22,6 +22,7 @@ public class Main {
             }
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
+            e.printStackTrace(); // Добавь для отладки!
             System.exit(1);
         }
     }

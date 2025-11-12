@@ -10,7 +10,9 @@ import java.util.regex.Pattern;
  * Класс для загрузки и хранения конфигурации приложения из app.properties.
  */
 public class AppConfig {
-    private static final Pattern FIELD_PATTERN = Pattern.compile("([^:]+):([^\\(]+)(\\(([^)]+)\\))?");
+
+    // Регулярка: name:type(args)
+    private static final Pattern FIELD_PATTERN = Pattern.compile("([^:]+):([^:)]+)(?:\\(([^)]+)\\))?");
 
     private final int rowsCount;
     private final String outputFormat;
@@ -22,9 +24,6 @@ public class AppConfig {
         this.fields = List.copyOf(fields);
     }
 
-    /**
-     * Загружает конфигурацию из classpath (src/main/resources/app.properties).
-     */
     public static AppConfig load() throws IOException {
         Properties props = new Properties();
         try (InputStream is = AppConfig.class.getClassLoader().getResourceAsStream("app.properties")) {
@@ -32,36 +31,76 @@ public class AppConfig {
             props.load(is);
         }
 
-        int rows = Integer.parseInt(props.getProperty("generator.rows.count", "10000").trim());
+        int rows = Integer.parseInt(props.getProperty("generator.rows.count", "100").trim());
         String format = props.getProperty("output.format", "CSV").trim();
         String fieldsStr = props.getProperty("generator.fields", "").trim();
 
-        if (fieldsStr.isEmpty()) throw new IllegalArgumentException("generator.fields is required");
+        if (fieldsStr.isEmpty()) {
+            throw new IllegalArgumentException("generator.fields is required");
+        }
 
         List<FieldDefinition> fields = parseFields(fieldsStr);
         return new AppConfig(rows, format, fields);
     }
 
+    /**
+     * Парсит строку полей с учётом скобок.
+     * Пример: "id:int(1,100000),user_name:name,user_email:email"
+     */
     private static List<FieldDefinition> parseFields(String input) {
         List<FieldDefinition> result = new ArrayList<>();
-        for (String part : input.split(",")) {
-            Matcher m = FIELD_PATTERN.matcher(part.trim());
-            if (!m.matches()) throw new IllegalArgumentException("Invalid field format: " + part);
+        int start = 0;
+        int bracketLevel = 0;
 
-            String name = m.group(1);
-            String type = m.group(2);
-            String argsStr = m.group(4);
-            List<String> args = argsStr != null ? Arrays.stream(argsStr.split(",")).map(String::trim).toList() : List.of();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
 
-            result.add(new FieldDefinition(name, type, args));
+            if (c == '(') bracketLevel++;
+            else if (c == ')') bracketLevel--;
+            else if (c == ',' && bracketLevel == 0) {
+                // Запятая вне скобок — разделитель
+                String part = input.substring(start, i).trim();
+                if (!part.isEmpty()) {
+                    result.add(parseSingleField(part));
+                }
+                start = i + 1;
+            }
         }
+
+        // Последнее поле
+        String lastPart = input.substring(start).trim();
+        if (!lastPart.isEmpty()) {
+            result.add(parseSingleField(lastPart));
+        }
+
         return result;
     }
 
+    /**
+     * Парсит одно поле: name:type или name:type(arg1,arg2)
+     */
+    private static FieldDefinition parseSingleField(String part) {
+        Matcher m = FIELD_PATTERN.matcher(part);
+        if (!m.matches()) {
+            throw new IllegalArgumentException("Invalid field format: " + part);
+        }
+
+        String name = m.group(1).trim();
+        String type = m.group(2).trim();
+        String argsStr = m.group(3); // может быть null
+        List<String> args = argsStr != null
+                ? Arrays.stream(argsStr.split(",")).map(String::trim).filter(s -> !s.isEmpty()).toList()
+                : List.of();
+
+        return new FieldDefinition(name, type, args);
+    }
+
+    // === Геттеры ===
     public int getRowsCount() { return rowsCount; }
     public String getOutputFormat() { return outputFormat; }
     public List<FieldDefinition> getFields() { return fields; }
 
+    // === Вложенный класс ===
     public static class FieldDefinition {
         private final String name;
         private final String type;
