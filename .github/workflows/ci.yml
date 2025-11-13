@@ -1,0 +1,55 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build & Test (JDK ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11, 17, 21 ]  # Тестирование на разных JDK
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'  # Eclipse Temurin (OpenJDK)
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build project
+        run: ./gradlew build --no-daemon
+
+      - name: Run tests
+        run: ./gradlew test --no-daemon
+
+      - name: Build Shadow JAR (only on JDK 11)
+        if: matrix.java == 11
+        run: ./gradlew shadowJar --no-daemon
+
+      - name: Upload JAR artifact (only on JDK 11)
+        if: matrix.java == 11
+        uses: actions/upload-artifact@v4
+        with:
+          name: mock-data-generator-${{ github.sha }}.jar
+          path: build/libs/*.jar
+          retention-days: 7  # Хранить артефакты 7 дней
