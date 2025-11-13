@@ -21,7 +21,7 @@ public class Main {
                 generator.generate(writer, formatter);
             }
         } catch (Exception e) {
-            System.err.println("Error1: " + e.getMessage());
+            System.err.println("Error12: " + e.getMessage());
             e.printStackTrace();
         }
     }
