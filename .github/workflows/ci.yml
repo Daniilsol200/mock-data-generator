@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ main, master ]
 
 jobs:
   build-and-test:
@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 11, 18, 21 ]  # Тестирование на разных JDK
+        java: [ 11, 17, 21 ]
+      fail-fast: false
 
     steps:
       - name: Checkout code
@@ -24,32 +25,27 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'temurin'  # Eclipse Temurin (OpenJDK)
+          distribution: 'temurin'
+          cache: 'gradle'
 
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      # ДОБАВЬ ЭТОТ ШАГ — ВАЖНО!
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Build project
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build --no-daemon --stacktrace
 
       - name: Run tests
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test --no-daemon --stacktrace
 
-      - name: Build Shadow JAR (only on JDK 18)
-        if: matrix.java == 18
+      - name: Build Shadow JAR (JDK 11 only)
+        if: matrix.java == 11
         run: ./gradlew shadowJar --no-daemon
 
-      - name: Upload JAR artifact (only on JDK 18)
-        if: matrix.java == 18
+      - name: Upload JAR artifact
+        if: matrix.java == 11
         uses: actions/upload-artifact@v4
         with:
           name: mock-data-generator-${{ github.sha }}.jar
           path: build/libs/*.jar
-          retention-days: 7  # Хранить артефакты 7 дней
+          retention-days: 7
