@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 11, 17, 21 ]  # Тестирование на разных JDK
+        java: [ 11, 18, 21 ]  # Тестирование на разных JDK
 
     steps:
       - name: Checkout code
@@ -42,12 +42,12 @@ jobs:
       - name: Run tests
         run: ./gradlew test --no-daemon
 
-      - name: Build Shadow JAR (only on JDK 11)
-        if: matrix.java == 11
+      - name: Build Shadow JAR (only on JDK 18)
+        if: matrix.java == 18
         run: ./gradlew shadowJar --no-daemon
 
-      - name: Upload JAR artifact (only on JDK 11)
-        if: matrix.java == 11
+      - name: Upload JAR artifact (only on JDK 18)
+        if: matrix.java == 18
         uses: actions/upload-artifact@v4
         with:
           name: mock-data-generator-${{ github.sha }}.jar
