@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 11, 17, 21 ]
+        java: [ 17, 21 ]  
       fail-fast: false
 
     steps:
@@ -28,24 +28,24 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
 
-      # ДОБАВЬ ЭТОТ ШАГ — ВАЖНО!
+      # Исправляем права на gradlew (Linux)
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Build project
-        run: ./gradlew build --no-daemon --stacktrace
+      # Полная сборка + тесты на всех JDK
+      - name: Build & Test
+        run: ./gradlew build test --no-daemon --stacktrace
 
-      - name: Run tests
-        run: ./gradlew test --no-daemon --stacktrace
-
-      - name: Build Shadow JAR (JDK 11 only)
-        if: matrix.java == 11
-        run: ./gradlew shadowJar --no-daemon
+      # Сборка Shadow JAR и загрузка артефакта ТОЛЬКО на JDK 17 и 21
+      - name: Build Shadow JAR
+        if: matrix.java == 17 || matrix.java == 21
+        run: ./gradlew shadowJar --no-daemon --info
 
       - name: Upload JAR artifact
-        if: matrix.java == 11
+        if: matrix.java == 17 || matrix.java == 21
         uses: actions/upload-artifact@v4
         with:
-          name: mock-data-generator-${{ github.sha }}.jar
-          path: build/libs/*.jar
+          # Делаем имя понятным + указываем JDK
+          name: mock-data-generator-jdk${{ matrix.java }}-${{ github.sha }}.jar
+          path: build/libs/mock-data-generator-*.jar
           retention-days: 7
