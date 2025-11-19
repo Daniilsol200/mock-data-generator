@@ -1,10 +1,11 @@
 name: CI/CD Pipeline
 
+# Запускается только на push/pull_request в master (и main на всякий случай)
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ master, main ]
   pull_request:
-    branches: [ main ]
+    branches: [ master, main ]
 
 jobs:
   build-and-test:
@@ -12,44 +13,50 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 11, 17, 21 ]  # Тестирование на разных JDK
+        java: [ 11, 17, 21 ]
+      fail-fast: false
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Setup JDK ${{ matrix.java }}
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ matrix.java }}
-          distribution: 'temurin'  # Eclipse Temurin (OpenJDK)
+    - name: Setup JDK ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java }}
+        distribution: 'temurin'
+        cache: 'gradle'  # Автоматически кэширует Gradle
 
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+    # КРИТИЧЕСКИ ВАЖНО на Linux!
+    - name: Make gradlew executable
+      run: chmod +x ./gradlew
 
-      - name: Build project
-        run: ./gradlew build --no-daemon
+    # Кэширование зависимостей вручную (на всякий случай — надёжнее)
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
 
-      - name: Run tests
-        run: ./gradlew test --no-daemon
+    # Сборка и тесты — на всех трёх JDK
+    - name: Build & Test
+      run: ./gradlew build test --no-daemon --info
 
-      - name: Build Shadow JAR (only on JDK 11)
-        if: matrix.java == 11
-        run: ./gradlew shadowJar --no-daemon
+    # Shadow JAR и артефакт — ТОЛЬКО на JDK 11
+    - name: Build Shadow JAR (only JDK 11)
+      if: matrix.java == 11
+      run: ./gradlew shadowJar --no-daemon
 
-      - name: Upload JAR artifact (only on JDK 11)
-        if: matrix.java == 11
-        uses: actions/upload-artifact@v4
-        with:
-          name: mock-data-generator-${{ github.sha }}.jar
-          path: build/libs/*.jar
-          retention-days: 7  # Хранить артефакты 7 дней
+    - name: Upload JAR artifact (only JDK 11)
+      if: matrix.java == 11
+      uses: actions/upload-artifact@v4
+      with:
+        name: mock-data-generator-${{ github.sha }}.jar
+        path: build/libs/mock-data-generator-*.jar
+        retention-days: 7
