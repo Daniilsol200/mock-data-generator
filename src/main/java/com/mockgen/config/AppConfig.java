@@ -6,6 +6,16 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Конфигурация приложения, загружаемая из {@code app.properties}.
+ *
+ * <p>Содержит:
+ * <ul>
+ *   <li>количество строк для генерации</li>
+ *   <li>формат вывода (CSV/JSON)</li>
+ *   <li>список полей с их типами и параметрами</li>
+ * </ul>
+ */
 
 public class AppConfig {
 

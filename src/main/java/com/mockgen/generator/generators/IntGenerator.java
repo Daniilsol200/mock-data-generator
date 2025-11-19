@@ -5,8 +5,18 @@ import com.mockgen.generator.FieldGenerator;
 import java.util.Random;
 
 /**
- * Генерирует случайное целое число в диапазоне [min, max].
+ * Генерирует случайные целые числа в заданном диапазоне [min, max].
+ *
+ * <p>Если границы не указаны, используется диапазон [0, 1000].
+ *
+ * <p>Примеры конфигурации:
+ * <ul>
+ *   <li>{@code id:int} → [0, 1000]</li>
+ *   <li>{@code age:int(18,99)} → [18, 99]</li>
+ * </ul>
+ *
  */
+
 public class IntGenerator implements FieldGenerator {
     private final int min;
     private final int max;

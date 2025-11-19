@@ -9,7 +9,18 @@ import java.util.*;
 import java.util.Random;
 
 /**
- * Основной класс генерации данных.
+ * Основной класс для генерации заданного количества строк моковых данных.
+ *
+ * <p>Последовательность работы:
+ * <ol>
+ *   <li>Чтение конфигурации из {@code src/main/resources/app.properties}</li>
+ *   <li>Парсинг полей и создание соответствующих генераторов</li>
+ *   <li>Генерация указанного количества строк</li>
+ *   <li>Вывод результата в выбранном формате (CSV или JSON)</li>
+ * </ol>
+ *
+ * @see AppConfig
+ * @see OutputFormatter
  */
 public class DataGenerator {
     private final AppConfig config;

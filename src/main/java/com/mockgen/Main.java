@@ -8,6 +8,27 @@ import com.mockgen.output.OutputFormatter;
 
 import java.io.PrintWriter;
 
+/**
+ * Генерирует моковые данные согласно конфигурации из app.properties.
+ *
+ * <p>Программа поддерживает следующие типы полей:
+ * <ul>
+ *   <li><code>int(min,max)</code> — случайное целое число в диапазоне</li>
+ *   <li><code>name</code> — случайное имя и фамилия</li>
+ *   <li><code>email</code> — email на основе имени</li>
+ *   <li><code>uuid</code> — случайный UUID</li>
+ * </ul>
+ *
+ * <p>Поддерживаемые форматы вывода:
+ * <ul>
+ *   <li>CSV</li>
+ *   <li>JSON</li>
+ * </ul>
+ *
+ * @author Daniilsol200
+ * @version 1.0.0
+ */
+
 public class Main {
     public static void main(String[] args) {
         try {
