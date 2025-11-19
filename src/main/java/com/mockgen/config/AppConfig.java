@@ -6,9 +6,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Класс для загрузки и хранения конфигурации приложения из app.properties.
- */
+
 public class AppConfig {
 
     private static final Pattern FIELD_PATTERN = Pattern.compile("([^:]+):([^:)]+)(?:\\(([^)]+)\\))?");
