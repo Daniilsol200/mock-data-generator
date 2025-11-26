@@ -43,4 +43,4 @@ generator.fields=id:int(1,100000),user_name:name,user_email:email
 
 4. **Запуск**
 Откройте файл src/main/java/com/mockgen/Main.java
-Нажмите зеленую стрелочку в верхней панели или нажмите Shift + F10
+Нажмите зеленую стрелочку в верхней панели или нажмите Shift + F10 или терминале ./gradlew run
