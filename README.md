@@ -34,12 +34,12 @@ File → Open → выберите распакованную папку → OK
 (Для данного примера используеться Idea Intellij) В дереве проекта:`src → main → правый клик → New → Directory → resources` (IDEA подсветит как рекомендуемую)  
  → В папке `resources`: правый клик → New → File → назовите `app.properties`
 
-- generator.rows.count=10
-- output.format=CSV
-- generator.fields=id:int(1,100000),user_name:name,user_email:email
-  
-- 4. Перейдите в папку main и запустите проект нажав на зеленую стрелочку вы увидите выполненную программу в окне терминала
-
+Вставьте в него пример конфигурации (можно менять под свои нужды):
+```
+generator.rows.count=10
+output.format=CSV
+generator.fields=id:int(1,100000),user_name:name,user_email:email
+```
 - 5. Для расширения функционала генерации необходимо добавлять новые классы для генерации необходимой информации в директорию generators
   6. 
 # 4. Собрать исполняемый JAR
