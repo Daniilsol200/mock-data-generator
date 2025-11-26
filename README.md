@@ -29,7 +29,7 @@
 Откройте папку с проектом в удобной среде разработки(Рекомундуеться использовать Idea Intellij)
 File → Open → выберите распакованную папку → OK
 
-2. **Запуск**
+3. **Добвление**
 Первый запуск потребует создать app.properties для корректной работы приложения
 (Для данного примера используеться Idea Intellij) В дереве проекта:`src → main → правый клик → New → Directory → resources` (IDEA подсветит как рекомендуемую)  
  → В папке `resources`: правый клик → New → File → назовите `app.properties`
@@ -40,17 +40,7 @@ generator.rows.count=10
 output.format=CSV
 generator.fields=id:int(1,100000),user_name:name,user_email:email
 ```
-- 5. Для расширения функционала генерации необходимо добавлять новые классы для генерации необходимой информации в директорию generators
-  6. 
-# 4. Собрать исполняемый JAR
-gradlew.bat shadowJar        # Windows
-# или
-./gradlew shadowJar          # Mac/Linux
 
-# → JAR появится здесь:
-# build/libs/mock-data-generator-1.0.0.jar
-
-# 5. Запустить приложение
-java -jar build\libs\mock-data-generator-1.0.0.jar   # Windows
-# или
-java -jar build/libs/mock-data-generator-1.0.0.jar   # Mac/Linux
+4. **Запуск**
+Откройте файл src/main/java/com/mockgen/Main.java
+Нажмите зеленую стрелочку в верхней панели или нажмите Shift + F10
