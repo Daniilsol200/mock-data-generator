@@ -48,16 +48,16 @@ generator.fields=id:int(1,100000),user_name:name,user_email:email
 
 ### Вариант 2: Через Полную установку проекта локально через консоль
 
-# 1. Переходим на Рабочий стол (или любую удобную папку)
+**1. Переходим на Рабочий стол (или любую удобную папку)**
 cd $HOME\Desktop
 
-# 2. Клонируем проект
+**2. Клонируем проект**
 git clone https://github.com/Daniilsol200/mock-data-generator.git
 
-# 3. Заходим в проект
+**3. Заходим в проект**
 cd mock-data-generator
 
-# 4. (ОБЯЗАТЕЛЬНО!) Создаём правильный app.properties внутри JAR’а
+**4. (ОБЯЗАТЕЛЬНО!) Создаём правильный app.properties внутри JAR’а**
 #     Этот скрипт создаст нужные папки и файл автоматически
 mkdir -p src\main\resources -Force
 
@@ -69,5 +69,5 @@ generator.fields=id:int(1,100000),user_name:name,user_email:email
 "@ | Out-File -Encoding UTF8 src\main\resources\app.properties
 ```
 
-# 5. Запускаем сборку и сразу приложение
+ **5. Запускаем сборку и сразу приложение**
 .\gradlew.bat shadowJar run
