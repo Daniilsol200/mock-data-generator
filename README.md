@@ -62,9 +62,9 @@ cd mock-data-generator
 ```
 4.**(ОБЯЗАТЕЛЬНО!) Создаём правильный app.properties внутри JAR’а**
 #     Этот скрипт создаст нужные папки и файл автоматически
-mkdir -p src\main\resources -Force
 
 ```
+mkdir -p src\main\resources -Force
 @"
 generator.rows.count=10
 output.format=CSV
