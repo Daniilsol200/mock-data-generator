@@ -58,18 +58,20 @@ git clone https://github.com/Daniilsol200/mock-data-generator.git
 ```
 3.**Заходим в проект**
 ```
-cd mock-data-generator
+cd ваш путь\mock-data-generator
 ```
-4.**(ОБЯЗАТЕЛЬНО!) Создаём правильный app.properties внутри JAR’а**
+4.**(ОБЯЗАТЕЛЬНО!) Создаём правильный app.properties внутри src\main\resources**
 #     Этот скрипт создаст нужные папки и файл автоматически
 
 ```
-mkdir -p src\main\resources -Force
-@"
-generator.rows.count=10
-output.format=CSV
-generator.fields=id:int(1,100000),user_name:name,user_email:email
-"@ | Out-File -Encoding UTF8 src\main\resources\app.properties
+cd ваш путь к src\main\resources
+
+echo generator.rows.count=10 > app.properties
+
+echo output.format=CSV >> app.properties
+
+echo generator.fields=id:int(1,100000),user_name:name,user_email:email >> app.properties
+
 ```
 
  5. **Запускаем сборку и сразу приложение**
