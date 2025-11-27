@@ -41,13 +41,15 @@ cd ваш_путь\mock-data-generator
 cd ваш_путь к src\main\resources
 
 //Здесь мы указываем целое количество строк для генерации
+
 echo generator.rows.count=10 > app.properties
 
 //Здесь мы указываем формат генерируемого файла доступны CSV и JSON
+
 echo output.format=CSV >> app.properties
 
 //Здесь мы указываем параметры генерируеммых данным через generator.fields=x1:x2,x1,x2
-//Доступные параметры id:int(1,100000),user_name:name,user_email:email Можно дублировать и ставить в любом порядке котором ты хочешь при ошибке в программе будет выведенно где именно ошибка
+
 echo generator.fields=id:int(1,100000),user_name:name,user_email:email >> app.properties
 
 ```
